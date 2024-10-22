@@ -65,6 +65,8 @@ MODEL PLANTING /PROFIT, RES_CONSTRAIN/;
 *Altnerative way to write (include all previously defined equations)
 *MODEL PLANTING /ALL/;
 
+RES_CONSTRAIN.opt=1;
+
 * 6. SOLVE the MODEL
 * Solve the PLANTING model using a Linear Programming Solver (see File=>Options=>Solvers)
 *     to maximize VPROFIT

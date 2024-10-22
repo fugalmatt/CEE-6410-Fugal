@@ -1,0 +1,102 @@
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/17/24 15:18:53 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      CEE 6410 - Water Resources Systems Analysis
+      Problem 3 from chapter 2 of Bishop Et Al Text (https://digitalcommons.usu.edu/ecstatic_all/76/)
+       
+      THE PROBLEM:
+       
+      An aqueduct constructed to supply water to industrial users has an excess capacity in the
+      months of June, July, and August of 14,000 acft, 18,000 acft, and 6,000 acft, respectively.
+      It is proposed to develop not more than 10,000 acres of new land by utilizing the excess
+      aqueduct capacity for irrigation water deliveries. Two crops, hay and grain, are to be
+      grown. Their monthly water requirements and expected net returns are given in the following table:
+       
+              June    July    August  Return($/acre)
+      Hay     2       1       1       100     
+      Grain   1       2       0       120
+       
+       
+                      Determine the optimal planting for the two crops.
+       
+      THE SOLUTION:
+      Uses General Algebraic Modeling System to Solve this Linear Program
+       
+      Matthew Fugal
+      fugalmatt@gmail.com
+      September 30, 2024
+  27   
+  28  * 1. DEFINE the SETS
+  29  SETS plnt crops growing /Hay, Grain/
+  30       res resources /JuneW, JulyW, AugustW, Land/;
+  31   
+  32  * 2. DEFINE input data
+  33  PARAMETERS
+  34     c(plnt) Objective function coefficients ($ per acre)
+  35           /Hay 100,
+  36           Grain 120/
+  37     b(res) Right hand constraint values (per resource)
+  38            /JuneW 14000
+  39            JulyW 18000
+  40            AugustW 6000
+  41            Land 10000/;
+  42   
+  43  TABLE A(plnt,res) Left hand side constraint coefficients
+  44                   JuneW  JulyW   AugustW Land
+  45   Hay             2      1       1       1
+  46   Grain           1      2       0       1;
+  47   
+  48  * 3. DEFINE the variables
+  49  VARIABLES X(plnt) plants planted (acres)
+  50            VPROFIT  total profit ($);
+  51   
+  52  * Non-negativity constraints
+  53  POSITIVE VARIABLES X;
+  54   
+  55  * 4. COMBINE variables and data in equations
+  56  EQUATIONS
+  57     PROFIT Total profit ($) and objective function value
+  58     RES_CONSTRAIN(res) Resource Constraints;
+  59   
+  60  PROFIT..                 VPROFIT =E= SUM(plnt,c(plnt)*X(plnt));
+  61  RES_CONSTRAIN(res) ..    SUM(plnt,A(plnt,res)*X(plnt)) =L= b(res);
+  62   
+  63  * 5. DEFINE the MODEL from the EQUATIONS
+  64  MODEL PLANTING /PROFIT, RES_CONSTRAIN/;
+  65  *Altnerative way to write (include all previously defined equations)
+  66  *MODEL PLANTING /ALL/;
+  67   
+  68  RES_CONSTRAIN.opt=1;
+****                  $315,148
+**** 148  Dimension different - The symbol is referenced with more/less
+****         indices as declared
+**** 315  Unknown suffix - ignored
+  69   
+  70  * 6. SOLVE the MODEL
+  71  * Solve the PLANTING model using a Linear Programming Solver (see File=>Options=>Solvers)
+  72  *     to maximize VPROFIT
+  73  SOLVE PLANTING USING LP MAXIMIZING VPROFIT;
+****                                            $257
+**** 257  Solve statement not checked because of previous errors
+  74   
+  75  * 6. CLick File menu => RUN (F9) or Solve icon and examine solution report in .LST file
+
+**** 3 ERROR(S)   0 WARNING(S)
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.6.0 c2de9d6d WEX-WEI
+
+
+USER: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
+      Utah State University, Utah Water Research Laboratory     DCE3763
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Hw4.gms
+Output     C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Hw4.lst
+
+**** USER ERROR(S) ENCOUNTERED
