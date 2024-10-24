@@ -28,7 +28,8 @@ PARAMETERS
 VARIABLES
     storage(t)         
     reservoir_use(t) 
-    reservoir_release(t)  
+    reservoir_release(t)
+    reservoir_bypass(t)
     pump_use(t)      
     total_profit
     I(src) binary decision to build or do prject from source src (1=yes 0=no)
@@ -37,14 +38,15 @@ VARIABLES
 Scalar
     initial_storage /0/;
 
-POSITIVE VARIABLES storage, reservoir_use, reservoir_release, pump_use;
+POSITIVE VARIABLES storage, reservoir_use, reservoir_release, pump_use, reservoir_bypass;
 
 Binary Variable I;
 
 EQUATIONS
     damlimit
     water_balance(t)
-    reservoir_capacity(t)  
+    reservoir_capacity(t)
+    reservoir_limit(t)
     pump_capacity(t)         
     pump_limit(t)      
     profit;
@@ -53,16 +55,19 @@ damlimit..
     I("low")+I("high") =L= 1;
 
 water_balance(t).. 
-    storage(t) =E= storage(t-1)$(ord(t) > 1) + inflow(t) - reservoir_use(t) - reservoir_release(t) + initial_storage$(ord(t)=1);
+    storage(t) =E= storage(t-1)$(ord(t) > 1) + inflow(t) - reservoir_use(t) - reservoir_release(t) - reservoir_bypass(t) + initial_storage$(ord(t)=1);
 
 reservoir_capacity(t).. 
     storage(t) + reservoir_use(t) + reservoir_release(t) =L= sum(src, reservoircapacity(src) * I(src));
+    
+reservoir_limit(t)..
+    reservoir_use(t) + reservoir_release(t) + reservoir_bypass(t) =L= inflow(t) + storage(t-1)$(ord(t)>1);
 
 pump_capacity(t)..
     pump_use(t) =L= maxcapacity("pump") * I("pump");
 
 pump_limit(t).. 
-    pump_use(t) =L= reservoir_release(t) + groundwater(t);
+    pump_use(t) =L= reservoir_release(t) + groundwater(t) + reservoir_bypass(t);
 
 profit..
     total_profit =E= SUM(t, reservoir_use(t) * irr_profit(t) + pump_use(t) * (irr_profit(t) - 20)) - sum(src, capcost(src) * I(src));
