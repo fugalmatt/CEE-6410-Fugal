@@ -1,30 +1,34 @@
 B 3 C o m p i l a t i o n
-B 81 Equation Listing    SOLVE reservoir_management Using MIP From line 72
-D 84 damlimit
-D 89 water_balance
-D 96 reservoir_capacity
-D 103 pump_capacity
-D 110 pump_limit
-D 117 profit
-B 123 Column Listing      SOLVE reservoir_management Using MIP From line 72
-E 126 storage
-E 140 reservoir_use
-E 155 reservoir_release
-E 170 pump_use
-E 185 total_profit
-E 192 I
-B 216 Range Statistics    SOLVE reservoir_management Using MIP From line 72
-B 227 Model Statistics    SOLVE reservoir_management Using MIP From line 72
-B 240 Solution Report     SOLVE reservoir_management Using MIP From line 72
-F 285 damlimit
-F 287 water_balance
-F 294 reservoir_capacity
-F 301 pump_capacity
-F 308 pump_limit
-F 317 profit
-G 319 storage
-G 326 reservoir_use
-G 333 reservoir_release
-G 340 pump_use
-G 349 total_profit
-G 351 I
+B 86 Equation Listing    SOLVE reservoir_management Using MIP From line 77
+D 89 damlimit
+D 94 water_balance
+D 101 reservoir_capacity
+D 108 reservoir_limit
+D 115 pump_capacity
+D 122 pump_limit
+D 129 profit
+B 135 Column Listing      SOLVE reservoir_management Using MIP From line 77
+E 138 storage
+E 153 reservoir_use
+E 170 reservoir_release
+E 187 reservoir_bypass
+E 202 pump_use
+E 217 total_profit
+E 224 I
+B 248 Range Statistics    SOLVE reservoir_management Using MIP From line 77
+B 259 Model Statistics    SOLVE reservoir_management Using MIP From line 77
+B 272 Solution Report     SOLVE reservoir_management Using MIP From line 77
+F 317 damlimit
+F 319 water_balance
+F 326 reservoir_capacity
+F 333 reservoir_limit
+F 340 pump_capacity
+F 347 pump_limit
+F 356 profit
+G 358 storage
+G 365 reservoir_use
+G 372 reservoir_release
+G 379 reservoir_bypass
+G 386 pump_use
+G 395 total_profit
+G 397 I

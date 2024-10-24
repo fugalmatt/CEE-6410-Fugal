@@ -1,4 +1,4 @@
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 1
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -32,53 +32,58 @@ C o m p i l a t i o n
   29      storage(t)
   30      reservoir_use(t)
   31      reservoir_release(t)
-  32      pump_use(t)
-  33      total_profit
-  34      I(src) binary decision to build or do prject from source src (1=yes 0=no)
-  35      TCOST  total capital and operating costs of supply actions ($);
-  36   
-  37  Scalar
-  38      initial_storage /0/;
-  39   
-  40  POSITIVE VARIABLES storage, reservoir_use, reservoir_release, pump_use;
-  41   
-  42  Binary Variable I;
-  43   
-  44  EQUATIONS
-  45      damlimit
-  46      water_balance(t)
-  47      reservoir_capacity(t)
-  48      pump_capacity(t)
-  49      pump_limit(t)
-  50      profit;
-  51   
-  52  damlimit..
-  53      I("low")+I("high") =L= 1;
-  54   
-  55  water_balance(t)..
-  56      storage(t) =E= storage(t-1)$(ord(t) > 1) + inflow(t) - reservoir_use(t) - reservoir_release(t) + initial_storage$(ord(t)=1);
-  57   
-  58  reservoir_capacity(t)..
-  59      storage(t) + reservoir_use(t) + reservoir_release(t) =L= sum(src, reservoircapacity(src) * I(src));
-  60   
-  61  pump_capacity(t)..
-  62      pump_use(t) =L= maxcapacity("pump") * I("pump");
-  63   
-  64  pump_limit(t)..
-  65      pump_use(t) =L= reservoir_release(t) + groundwater(t);
-  66   
-  67  profit..
-  68      total_profit =E= SUM(t, reservoir_use(t) * irr_profit(t) + pump_use(t) * (irr_profit(t) - 20)) - sum(src, capcost(src) * I(src));
-  69   
-  70  MODEL reservoir_management /all/;
+  32      reservoir_bypass(t)
+  33      pump_use(t)
+  34      total_profit
+  35      I(src) binary decision to build or do prject from source src (1=yes 0=no)
+  36      TCOST  total capital and operating costs of supply actions ($);
+  37   
+  38  Scalar
+  39      initial_storage /0/;
+  40   
+  41  POSITIVE VARIABLES storage, reservoir_use, reservoir_release, pump_use, reservoir_bypass;
+  42   
+  43  Binary Variable I;
+  44   
+  45  EQUATIONS
+  46      damlimit
+  47      water_balance(t)
+  48      reservoir_capacity(t)
+  49      reservoir_limit(t)
+  50      pump_capacity(t)
+  51      pump_limit(t)
+  52      profit;
+  53   
+  54  damlimit..
+  55      I("low")+I("high") =L= 1;
+  56   
+  57  water_balance(t)..
+  58      storage(t) =E= storage(t-1)$(ord(t) > 1) + inflow(t) - reservoir_use(t) - reservoir_release(t) - reservoir_bypass(t) + initial_storage$(ord(t)=1);
+  59   
+  60  reservoir_capacity(t)..
+  61      storage(t) + reservoir_use(t) + reservoir_release(t) =L= sum(src, reservoircapacity(src) * I(src));
+  62   
+  63  reservoir_limit(t)..
+  64      reservoir_use(t) + reservoir_release(t) + reservoir_bypass(t) =L= inflow(t) + storage(t-1)$(ord(t)>1);
+  65   
+  66  pump_capacity(t)..
+  67      pump_use(t) =L= maxcapacity("pump") * I("pump");
+  68   
+  69  pump_limit(t)..
+  70      pump_use(t) =L= reservoir_release(t) + groundwater(t) + reservoir_bypass(t);
   71   
-  72  SOLVE reservoir_management USING MIP MAXIMIZING total_profit;
+  72  profit..
+  73      total_profit =E= SUM(t, reservoir_use(t) * irr_profit(t) + pump_use(t) * (irr_profit(t) - 20)) - sum(src, capcost(src) * I(src));
+  74   
+  75  MODEL reservoir_management /all/;
+  76   
+  77  SOLVE reservoir_management USING MIP MAXIMIZING total_profit;
 
 
 COMPILATION TIME     =        0.000 SECONDS      3 MB  47.6.0 c2de9d6d WEX-WEI
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 2
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Equation Listing    SOLVE reservoir_management Using MIP From line 72
+Equation Listing    SOLVE reservoir_management Using MIP From line 77
 
 
 ---- damlimit  =L=  
@@ -88,9 +93,9 @@ damlimit..  I(low) + I(high) =L= 1 ; (LHS = 0)
 
 ---- water_balance  =E=  
 
-water_balance(1)..  storage(1) + reservoir_use(1) + reservoir_release(1) =E= 600 ; (LHS = 0, INFES = 600 ****)
+water_balance(1)..  storage(1) + reservoir_use(1) + reservoir_release(1) + reservoir_bypass(1) =E= 600 ; (LHS = 0, INFES = 600 ****)
      
-water_balance(2)..  - storage(1) + storage(2) + reservoir_use(2) + reservoir_release(2) =E= 200 ; (LHS = 0, INFES = 200 ****)
+water_balance(2)..  - storage(1) + storage(2) + reservoir_use(2) + reservoir_release(2) + reservoir_bypass(2) =E= 200 ; (LHS = 0, INFES = 200 ****)
      
 
 ---- reservoir_capacity  =L=  
@@ -98,6 +103,13 @@ water_balance(2)..  - storage(1) + storage(2) + reservoir_use(2) + reservoir_rel
 reservoir_capacity(1)..  storage(1) + reservoir_use(1) + reservoir_release(1) - 300*I(low) - 700*I(high) =L= 0 ; (LHS = 0)
      
 reservoir_capacity(2)..  storage(2) + reservoir_use(2) + reservoir_release(2) - 300*I(low) - 700*I(high) =L= 0 ; (LHS = 0)
+     
+
+---- reservoir_limit  =L=  
+
+reservoir_limit(1)..  reservoir_use(1) + reservoir_release(1) + reservoir_bypass(1) =L= 600 ; (LHS = 0)
+     
+reservoir_limit(2)..  - storage(1) + reservoir_use(2) + reservoir_release(2) + reservoir_bypass(2) =L= 200 ; (LHS = 0)
      
 
 ---- pump_capacity  =L=  
@@ -109,18 +121,18 @@ pump_capacity(2)..  pump_use(2) - 400.4*I(pump) =L= 0 ; (LHS = 0)
 
 ---- pump_limit  =L=  
 
-pump_limit(1)..  - reservoir_release(1) + pump_use(1) =L= 364 ; (LHS = 0)
+pump_limit(1)..  - reservoir_release(1) - reservoir_bypass(1) + pump_use(1) =L= 364 ; (LHS = 0)
      
-pump_limit(2)..  - reservoir_release(2) + pump_use(2) =L= 364 ; (LHS = 0)
+pump_limit(2)..  - reservoir_release(2) - reservoir_bypass(2) + pump_use(2) =L= 364 ; (LHS = 0)
      
 
 ---- profit  =E=  
 
 profit..  - 300*reservoir_use(1) - 100*reservoir_use(2) - 280*pump_use(1) - 80*pump_use(2) + total_profit + 6000*I(low) + 10000*I(high) + 8000*I(pump) =E= 0 ; (LHS = 0)
      
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 3
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Column Listing      SOLVE reservoir_management Using MIP From line 72
+Column Listing      SOLVE reservoir_management Using MIP From line 77
 
 
 ---- storage  
@@ -130,6 +142,7 @@ storage(1)
         1       water_balance(1)
        -1       water_balance(2)
         1       reservoir_capacity(1)
+       -1       reservoir_limit(2)
 
 storage(2)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
@@ -143,12 +156,14 @@ reservoir_use(1)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
         1       water_balance(1)
         1       reservoir_capacity(1)
+        1       reservoir_limit(1)
      -300       profit
 
 reservoir_use(2)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
         1       water_balance(2)
         1       reservoir_capacity(2)
+        1       reservoir_limit(2)
      -100       profit
 
 
@@ -158,12 +173,29 @@ reservoir_release(1)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
         1       water_balance(1)
         1       reservoir_capacity(1)
+        1       reservoir_limit(1)
        -1       pump_limit(1)
 
 reservoir_release(2)
                 (.LO, .L, .UP, .M = 0, 0, +INF, 0)
         1       water_balance(2)
         1       reservoir_capacity(2)
+        1       reservoir_limit(2)
+       -1       pump_limit(2)
+
+
+---- reservoir_bypass  
+
+reservoir_bypass(1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       water_balance(1)
+        1       reservoir_limit(1)
+       -1       pump_limit(1)
+
+reservoir_bypass(2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       water_balance(2)
+        1       reservoir_limit(2)
        -1       pump_limit(2)
 
 
@@ -211,9 +243,9 @@ I(pump)
      -400.4     pump_capacity(2)
      8000       profit
 
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 4
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Range Statistics    SOLVE reservoir_management Using MIP From line 72
+Range Statistics    SOLVE reservoir_management Using MIP From line 77
 
 
 RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
@@ -222,36 +254,36 @@ RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
 Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
 
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 5
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Model Statistics    SOLVE reservoir_management Using MIP From line 72
+Model Statistics    SOLVE reservoir_management Using MIP From line 77
 
 
 MODEL STATISTICS
 
-BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS           10
-BLOCKS OF VARIABLES           6     SINGLE VARIABLES           12
-NON ZERO ELEMENTS            35     DISCRETE VARIABLES          3
+BLOCKS OF EQUATIONS           7     SINGLE EQUATIONS           12
+BLOCKS OF VARIABLES           7     SINGLE VARIABLES           14
+NON ZERO ELEMENTS            46     DISCRETE VARIABLES          3
 
 
-GENERATION TIME      =        0.016 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 6
+GENERATION TIME      =        0.000 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 15:53:44 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
-Solution Report     SOLVE reservoir_management Using MIP From line 72
+Solution Report     SOLVE reservoir_management Using MIP From line 77
 
 
                S O L V E      S U M M A R Y
 
      MODEL   reservoir_management   OBJECTIVE  total_profit
      TYPE    MIP                    DIRECTION  MAXIMIZE
-     SOLVER  CPLEX                  FROM LINE  72
+     SOLVER  CPLEX                  FROM LINE  77
 
 **** SOLVER STATUS     1 Normal Completion
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE           313040.0000
 
- RESOURCE USAGE, LIMIT          0.031 10000000000.000
- ITERATION COUNT, LIMIT         6    2147483647
+ RESOURCE USAGE, LIMIT          0.015 10000000000.000
+ ITERATION COUNT, LIMIT         9    2147483647
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
 --- GMO memory 0.50 Mb (peak 0.50 Mb)
@@ -261,7 +293,7 @@ Solution Report     SOLVE reservoir_management Using MIP From line 72
 
 
 --- MIP status (101): integer optimal solution.
---- Cplex Time: 0.03sec (det. 0.07 ticks)
+--- Cplex Time: 0.02sec (det. 0.11 ticks)
 
 --- Returning a primal only solution to GAMS (marginals all set to NA).
 --- Fixing integer variables and solving final LP...
@@ -272,7 +304,7 @@ Solution Report     SOLVE reservoir_management Using MIP From line 72
 
 
 Proven optimal solution
-MIP Solution:       313040.000000    (6 iterations, 0 nodes)
+MIP Solution:       313040.000000    (9 iterations, 0 nodes)
 Final Solve:        313040.000000    (3 iterations)
 
 Best possible:      313040.000000
@@ -289,7 +321,7 @@ Relative gap:            0.000000
          LOWER          LEVEL          UPPER         MARGINAL
 
 1       600.0000       600.0000       600.0000       300.0000      
-2       200.0000       200.0000       200.0000       100.0000      
+2       200.0000       200.0000       200.0000         EPS         
 
 ---- EQU reservoir_capacity  
 
@@ -297,6 +329,13 @@ Relative gap:            0.000000
 
 1        -INF         -100.0000          .              .          
 2        -INF         -500.0000          .              .          
+
+---- EQU reservoir_limit  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1        -INF          600.0000       600.0000          .          
+2        -INF          200.0000       200.0000       100.0000      
 
 ---- EQU pump_capacity  
 
@@ -321,7 +360,7 @@ Relative gap:            0.000000
          LOWER          LEVEL          UPPER         MARGINAL
 
 1          .              .            +INF         -200.0000      
-2          .              .            +INF         -100.0000      
+2          .              .            +INF             .          
 
 ---- VAR reservoir_use  
 
@@ -331,6 +370,13 @@ Relative gap:            0.000000
 2          .           200.0000        +INF             .          
 
 ---- VAR reservoir_release  
+
+         LOWER          LEVEL          UPPER         MARGINAL
+
+1          .              .            +INF          -20.0000      
+2          .              .            +INF          -20.0000      
+
+---- VAR reservoir_bypass  
 
          LOWER          LEVEL          UPPER         MARGINAL
 
@@ -362,7 +408,7 @@ pump          .             1.0000         1.0000     -8000.0000
                              0  UNBOUNDED
 
 
-EXECUTION TIME       =        0.094 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+EXECUTION TIME       =        0.078 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
 
 
 USER: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
