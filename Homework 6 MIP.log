@@ -1,8 +1,9 @@
---- Job homework 6 MIP (1).gms Start 10/22/24 14:46:08 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
+
+--- Job Homework 6 MIP.gms Start 10/22/24 15:06:48 47.6.0 c2de9d6d WEX-WEI x86 64bit/MS Windows
 --- Applying:
     C:\GAMS\47\gmsprmNT.txt
 --- GAMS Parameters defined
-    Input "C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\homework 6 MIP (1).gms"
+    Input "C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Homework 6 MIP.gms"
     PageSize 0
     ScrDir C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\225a\
     SysDir C:\GAMS\47\
@@ -20,17 +21,17 @@ Licensee: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
 Processor information: 1 socket(s), 10 core(s), and 12 thread(s) available
 GAMS 47.6.0   Copyright (C) 1987-2024 GAMS Development. All rights reserved
 --- Starting compilation
---- homework 6 MIP (1).gms(72) 3 Mb
---- Starting execution: elapsed 0:00:00.024
+--- Homework 6 MIP.gms(72) 3 Mb
+--- Starting execution: elapsed 0:00:00.007
 --- Generating MIP model reservoir_management
---- homework 6 MIP (1).gms(72) 4 Mb
+--- Homework 6 MIP.gms(72) 4 Mb
 ---   10 rows  12 columns  35 non-zeroes
 ---   3 discrete-columns
 --- Range statistics (absolute non-zero finite values)
 --- RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
 --- Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 --- Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
---- Executing CPLEX (Solvelink=2): elapsed 0:00:00.139
+--- Executing CPLEX (Solvelink=2): elapsed 0:00:00.025
 
 IBM ILOG CPLEX   47.6.0 c2de9d6d Sep 12, 2024          WEI x86 64bit/MS Window
 
@@ -88,19 +89,19 @@ Found incumbent of value 190000.000000 after 0.00 sec. (0.05 ticks)
 *     0+    0                       313040.0000   313767.2727             0.23%
 Found incumbent of value 313040.000000 after 0.00 sec. (0.05 ticks)
       0     0        cutoff         313040.0000                      6     --- 
-Elapsed time = 0.02 sec. (0.07 ticks, tree = 0.01 MB)
+Elapsed time = 0.00 sec. (0.07 ticks, tree = 0.01 MB)
 
 Root node processing (before b&c):
-  Real time             =    0.02 sec. (0.07 ticks)
+  Real time             =    0.00 sec. (0.07 ticks)
 Parallel b&c, 12 threads:
   Real time             =    0.00 sec. (0.00 ticks)
   Sync time (average)   =    0.00 sec.
   Wait time (average)   =    0.00 sec.
                           ------------
-Total (root+branch&cut) =    0.02 sec. (0.07 ticks)
+Total (root+branch&cut) =    0.00 sec. (0.07 ticks)
 
 --- MIP status (101): integer optimal solution.
---- Cplex Time: 0.02sec (det. 0.07 ticks)
+--- Cplex Time: 0.03sec (det. 0.07 ticks)
 
 --- Returning a primal only solution to GAMS (marginals all set to NA).
 --- Fixing integer variables and solving final LP...
@@ -136,4 +137,4 @@ Relative gap:            0.000000
 
 --- Reading solution for model reservoir_management
 *** Status: Normal completion
---- Job homework 6 MIP (1).gms Stop 10/22/24 14:46:08 elapsed 0:00:00.382
+--- Job Homework 6 MIP.gms Stop 10/22/24 15:06:48 elapsed 0:00:00.104

@@ -1,75 +1,72 @@
-$ontext
-CEE 6410 - Water Resources Systems Analysis
+$onText
+CEE 6410
+Homework 5
+
 Matthew Fugal
 fugalmatt@gmail.com
-October 14, 2024
-$offtext
+October 8, 2024
+$offText
 
-* 1. DEFINE the SETS
-SETS src water supply sources /sr "small reservoir", lr "large reservoir", pu "lower river pump"/;
+SETS
+    t /1*2/
+    src /low, high, pump/;
 
-* 2. DEFINE input data
 PARAMETERS
-   CapCost(src) capital cost ($ to build)
-         /sr 6000,
-          lr 10000,
-          pu 8000/
-   OpCost(src) operating cost ($ per ac-ft)
-         /sr 0,
-          lr 0,
-          pu 20/
-   MaxCapacity(src) Maximum capacity of source when built (ac-ft per year)
-          /sr 300,
-           lr 700,
-           pu 803/
-   MinUse(src) Minimum required use of source when built (ac-ft per year)
-          /sr 0,
-           lr 0,
-           pu 0/
+    inflow(t)
+         /1 600, 2 200/
+    groundwater(t)
+        /1 364, 2 364/
+    irr_profit(t)
+         /1 300, 2 100/
+    CapCost(src) capital cost ($ to build)
+         /low 6000, high 10000, pump 8000/
+   maxcapacity(src) Maximum capacity of source when built (ac-ft per year)
+          /low 300, high 700, pump 400.4/
+   reservoircapacity(src)
+          /low 300, high 700, pump 0/;
+    
+VARIABLES
+    storage(t)         
+    reservoir_use(t) 
+    reservoir_release(t)  
+    pump_use(t)      
+    total_profit
+    I(src) binary decision to build or do prject from source src (1=yes 0=no)
+    TCOST  total capital and operating costs of supply actions ($);
+    
+Scalar
+    initial_storage /0/;
 
-   IntUpBnd(src) Upper bound on integer variables (#)
-          /sr 1,
-           lr 1,
-           pu 1/
-   IntLowBnd(src) Lower bound on integer variables (#)
-           /sr 0,
-            lr 0,
-            pu 0/;
+POSITIVE VARIABLES storage, reservoir_use, reservoir_release, pump_use;
 
-* 3. DEFINE the variables
-VARIABLES I(src) binary decision to build or do prject from source src (1=yes 0=no)
-          X(src) volume of water provided by source src (ac-ft per year)
-          TCOST  total capital and operating costs of supply actions ($);
+Binary Variable I;
 
-BINARY VARIABLES I;
-* Non-negativity constraints
-POSITIVE VARIABLES X;
-
-* 4. COMBINE variables and data in equations
 EQUATIONS
-   COST            Total Cost ($) and objective function value
-   MaxCap(src)     Maximum capacity of source when built (ac-ft per year)
-   MinReqUse(src)  Minimum required use of source when built (ac-ft per year)
-   MeetDemand      Meet demand (ac-ft per year)
-   IntUpBound(src) Upper bound on interger variables (number)
-   IntLowBound(src) Lower bound on integer variables (number);
+    damlimit
+    water_balance(t)
+    reservoir_capacity(t)  
+    pump_capacity(t)         
+    pump_limit(t)      
+    profit;
 
-COST..                 TCOST =E= SUM(src,CapCost(src)*I(src) + OpCost(src)*X(src));
-MaxCap(src) ..           X(src) =L= MaxCapacity(src)*I(src);
-MinReqUse(src) ..        X(src) =G= MinUse(src)*I(src);
-MeetDemand ..            sum(src,X(src)) =G= TotDemand;
-IntUpBound(src) ..       I(src) =L= IntUpBnd(src);
-IntLowBound(src) ..      I(src) =G= IntLowBnd(src);
+damlimit..
+    I("low")+I("high") =L= 1;
 
-* 5. DEFINE the MODEL from the EQUATIONS
-MODEL WatSupplyRelaxed /ALL/;
+water_balance(t).. 
+    storage(t) =E= storage(t-1)$(ord(t) > 1) + inflow(t) - reservoir_use(t) - reservoir_release(t) + initial_storage$(ord(t)=1);
 
-* 6. Solve the Model as an LP (relaxed IP)
-SOLVE WatSupplyRelaxed USING MIP MINIMIZING TCOST;
+reservoir_capacity(t).. 
+    storage(t) + reservoir_use(t) + reservoir_release(t) =L= sum(src, reservoircapacity(src) * I(src));
 
-DISPLAY X.L, I.L, TCOST.L;
+pump_capacity(t)..
+    pump_use(t) =L= maxcapacity("pump") * I("pump");
 
-* Dump all input data and results to a GAMS gdx file
-Execute_Unload "Ex6-3-integer.gdx";
-* Dump the gdx file to an Excel workbook
-Execute "gdx2xls Ex6-3-integer.gdx"
+pump_limit(t).. 
+    pump_use(t) =L= reservoir_release(t) + groundwater(t);
+
+profit..
+    total_profit =E= SUM(t, reservoir_use(t) * irr_profit(t) + pump_use(t) * (irr_profit(t) - 20)) - sum(src, capcost(src) * I(src));
+
+MODEL reservoir_management /all/;
+
+SOLVE reservoir_management USING MIP MAXIMIZING total_profit;

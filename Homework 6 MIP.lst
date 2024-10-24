@@ -1,4 +1,4 @@
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 1
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 1
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 C o m p i l a t i o n
 
@@ -76,7 +76,7 @@ C o m p i l a t i o n
 
 
 COMPILATION TIME     =        0.000 SECONDS      3 MB  47.6.0 c2de9d6d WEX-WEI
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 2
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 2
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Equation Listing    SOLVE reservoir_management Using MIP From line 72
 
@@ -118,7 +118,7 @@ pump_limit(2)..  - reservoir_release(2) + pump_use(2) =L= 364 ; (LHS = 0)
 
 profit..  - 300*reservoir_use(1) - 100*reservoir_use(2) - 280*pump_use(1) - 80*pump_use(2) + total_profit + 6000*I(low) + 10000*I(high) + 8000*I(pump) =E= 0 ; (LHS = 0)
      
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 3
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 3
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Column Listing      SOLVE reservoir_management Using MIP From line 72
 
@@ -211,7 +211,7 @@ I(pump)
      -400.4     pump_capacity(2)
      8000       profit
 
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 4
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 4
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Range Statistics    SOLVE reservoir_management Using MIP From line 72
 
@@ -222,7 +222,7 @@ RHS       [min, max] : [ 1.000E+00, 6.000E+02] - Zero values observed as well
 Bound     [min, max] : [ 1.000E+00, 1.000E+00] - Zero values observed as well
 Matrix    [min, max] : [ 1.000E+00, 1.000E+04]
 
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 5
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 5
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Model Statistics    SOLVE reservoir_management Using MIP From line 72
 
@@ -234,8 +234,8 @@ BLOCKS OF VARIABLES           6     SINGLE VARIABLES           12
 NON ZERO ELEMENTS            35     DISCRETE VARIABLES          3
 
 
-GENERATION TIME      =        0.109 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
-GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 14:46:08 Page 6
+GENERATION TIME      =        0.016 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/22/24 15:06:48 Page 6
 G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
 Solution Report     SOLVE reservoir_management Using MIP From line 72
 
@@ -250,7 +250,7 @@ Solution Report     SOLVE reservoir_management Using MIP From line 72
 **** MODEL STATUS      1 Optimal
 **** OBJECTIVE VALUE           313040.0000
 
- RESOURCE USAGE, LIMIT          0.016 10000000000.000
+ RESOURCE USAGE, LIMIT          0.031 10000000000.000
  ITERATION COUNT, LIMIT         6    2147483647
 *** This solver runs with a community license.
 --- GMO setup time: 0.00s
@@ -261,7 +261,7 @@ Solution Report     SOLVE reservoir_management Using MIP From line 72
 
 
 --- MIP status (101): integer optimal solution.
---- Cplex Time: 0.02sec (det. 0.07 ticks)
+--- Cplex Time: 0.03sec (det. 0.07 ticks)
 
 --- Returning a primal only solution to GAMS (marginals all set to NA).
 --- Fixing integer variables and solving final LP...
@@ -362,7 +362,7 @@ pump          .             1.0000         1.0000     -8000.0000
                              0  UNBOUNDED
 
 
-EXECUTION TIME       =        0.359 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+EXECUTION TIME       =        0.094 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
 
 
 USER: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
@@ -372,5 +372,5 @@ USER: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
 
 **** FILE SUMMARY
 
-Input      C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\homework 6 MIP (1).gms
-Output     C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\homework 6 MIP (1).lst
+Input      C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Homework 6 MIP.gms
+Output     C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Homework 6 MIP.lst
