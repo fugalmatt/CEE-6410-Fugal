@@ -1,0 +1,389 @@
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 1
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+C o m p i l a t i o n
+
+
+      CEE 6410
+      Homework 5
+       
+      Matthew Fugal
+      fugalmatt@gmail.com
+      October 8, 2024
+   9   
+  10  Sets
+  11      month /m1*m6/;
+  12   
+  13  Parameters
+  14      hydro_benefit(month)
+  15           /m1 1.6, m2 1.7, m3 1.8, m4 1.9, m5 2.0, m6 2.0/
+  16      irr_benefit(month)
+  17           /m1 1.0, m2 1.2, m3 1.9, m4 2.0, m5 2.2, m6 2.2/
+  18      inflow(month)
+  19           /m1 2, m2 2, m3 3, m4 4, m5 3, m6 2/;
+  20   
+  21  Scalars
+  22      initial_storage /5/
+  23      hydro_cap /4/
+  24      storage_cap /9/;
+  25   
+  26  VARIABLES
+  27      storage(month)
+  28      spill(month)
+  29      hydropower(month)
+  30      irrigation(month)
+  31      vprofit;
+  32   
+  33  POSITIVE VARIABLES storage, irrigation, spill, hydropower;
+  34   
+  35  EQUATIONS
+  36      Reservoir_storage(month)
+  37      Reservoir_capacity(month)
+  38      Hydro_capacity(month)
+  39      Irrigation_use(month)
+  40      Storage_final
+  41      Profit;
+  42   
+  43  Reservoir_storage(month)..  storage(month) =E= storage(month-1)$(ord(month)>1) + inflow(month) - spill(month) - hydropower(month) + initial_storage$(ord(month)=1);
+  44   
+  45  Reservoir_capacity(month).. storage(month) =L= storage_cap;
+  46   
+  47  Storage_final..             storage("m6") =G= initial_storage;
+  48   
+  49  Hydro_capacity(month)..     hydropower(month) =L= hydro_cap;
+  50   
+  51  Irrigation_use(month)..     irrigation(month) =E= hydropower(month) + spill(month) - 1;
+  52   
+  53  Profit..                    vprofit =E= SUM(month, irrigation(month) * irr_benefit(month)) + SUM(month, hydropower(month) * hydro_benefit(month));
+  54   
+  55  MODEL reservoir /all/;
+  56   
+  57  SOLVE reservoir USING LP MAXIMIZING vprofit;
+
+
+COMPILATION TIME     =        0.000 SECONDS      3 MB  47.6.0 c2de9d6d WEX-WEI
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 2
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Equation Listing    SOLVE reservoir Using LP From line 57
+
+
+---- Reservoir_storage  =E=  
+
+Reservoir_storage(m1)..  storage(m1) + spill(m1) + hydropower(m1) =E= 7 ; (LHS = 0, INFES = 7 ****)
+     
+Reservoir_storage(m2)..  - storage(m1) + storage(m2) + spill(m2) + hydropower(m2) =E= 2 ; (LHS = 0, INFES = 2 ****)
+     
+Reservoir_storage(m3)..  - storage(m2) + storage(m3) + spill(m3) + hydropower(m3) =E= 3 ; (LHS = 0, INFES = 3 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- Reservoir_capacity  =L=  
+
+Reservoir_capacity(m1)..  storage(m1) =L= 9 ; (LHS = 0)
+     
+Reservoir_capacity(m2)..  storage(m2) =L= 9 ; (LHS = 0)
+     
+Reservoir_capacity(m3)..  storage(m3) =L= 9 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- Hydro_capacity  =L=  
+
+Hydro_capacity(m1)..  hydropower(m1) =L= 4 ; (LHS = 0)
+     
+Hydro_capacity(m2)..  hydropower(m2) =L= 4 ; (LHS = 0)
+     
+Hydro_capacity(m3)..  hydropower(m3) =L= 4 ; (LHS = 0)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- Irrigation_use  =E=  
+
+Irrigation_use(m1)..  - spill(m1) - hydropower(m1) + irrigation(m1) =E= -1 ; (LHS = 0, INFES = 1 ****)
+     
+Irrigation_use(m2)..  - spill(m2) - hydropower(m2) + irrigation(m2) =E= -1 ; (LHS = 0, INFES = 1 ****)
+     
+Irrigation_use(m3)..  - spill(m3) - hydropower(m3) + irrigation(m3) =E= -1 ; (LHS = 0, INFES = 1 ****)
+     
+REMAINING 3 ENTRIES SKIPPED
+
+
+---- Storage_final  =G=  
+
+Storage_final..  storage(m6) =G= 5 ; (LHS = 0, INFES = 5 ****)
+     
+
+---- Profit  =E=  
+
+Profit..  - 1.6*hydropower(m1) - 1.7*hydropower(m2) - 1.8*hydropower(m3) - 1.9*hydropower(m4) - 2*hydropower(m5) - 2*hydropower(m6) - irrigation(m1) - 1.2*irrigation(m2) - 1.9*irrigation(m3) - 2*irrigation(m4) - 2.2*irrigation(m5) - 2.2*irrigation(m6) + vprofit =E= 0 ; (LHS = 0)
+     
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 3
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Column Listing      SOLVE reservoir Using LP From line 57
+
+
+---- storage  
+
+storage(m1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m1)
+       -1       Reservoir_storage(m2)
+        1       Reservoir_capacity(m1)
+
+storage(m2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m2)
+       -1       Reservoir_storage(m3)
+        1       Reservoir_capacity(m2)
+
+storage(m3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m3)
+       -1       Reservoir_storage(m4)
+        1       Reservoir_capacity(m3)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- spill  
+
+spill(m1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m1)
+       -1       Irrigation_use(m1)
+
+spill(m2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m2)
+       -1       Irrigation_use(m2)
+
+spill(m3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m3)
+       -1       Irrigation_use(m3)
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- hydropower  
+
+hydropower(m1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m1)
+        1       Hydro_capacity(m1)
+       -1       Irrigation_use(m1)
+       -1.6     Profit
+
+hydropower(m2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m2)
+        1       Hydro_capacity(m2)
+       -1       Irrigation_use(m2)
+       -1.7     Profit
+
+hydropower(m3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Reservoir_storage(m3)
+        1       Hydro_capacity(m3)
+       -1       Irrigation_use(m3)
+       -1.8     Profit
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- irrigation  
+
+irrigation(m1)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Irrigation_use(m1)
+       -1       Profit
+
+irrigation(m2)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Irrigation_use(m2)
+       -1.2     Profit
+
+irrigation(m3)
+                (.LO, .L, .UP, .M = 0, 0, +INF, 0)
+        1       Irrigation_use(m3)
+       -1.9     Profit
+
+REMAINING 3 ENTRIES SKIPPED
+
+---- vprofit  
+
+vprofit
+                (.LO, .L, .UP, .M = -INF, 0, +INF, 0)
+        1       Profit
+
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 4
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Range Statistics    SOLVE reservoir Using LP From line 57
+
+
+RANGE STATISTICS (ABSOLUTE NON-ZERO FINITE VALUES)
+
+RHS       [min, max] : [ 1.000E+00, 9.000E+00] - Zero values observed as well
+Bound     [min, max] : [        NA,        NA] - Zero values observed as well
+Matrix    [min, max] : [ 1.000E+00, 2.200E+00]
+
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 5
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Model Statistics    SOLVE reservoir Using LP From line 57
+
+
+MODEL STATISTICS
+
+BLOCKS OF EQUATIONS           6     SINGLE EQUATIONS           26
+BLOCKS OF VARIABLES           5     SINGLE VARIABLES           25
+NON ZERO ELEMENTS            67
+
+
+GENERATION TIME      =        0.016 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+GAMS 47.6.0  c2de9d6d Sep 12, 2024          WEX-WEI x86 64bit/MS Windows - 10/24/24 22:42:38 Page 6
+G e n e r a l   A l g e b r a i c   M o d e l i n g   S y s t e m
+Solution Report     SOLVE reservoir Using LP From line 57
+
+
+               S O L V E      S U M M A R Y
+
+     MODEL   reservoir           OBJECTIVE  vprofit
+     TYPE    LP                  DIRECTION  MAXIMIZE
+     SOLVER  CPLEX               FROM LINE  57
+
+**** SOLVER STATUS     1 Normal Completion
+**** MODEL STATUS      1 Optimal
+**** OBJECTIVE VALUE               51.6000
+
+ RESOURCE USAGE, LIMIT          0.000 10000000000.000
+ ITERATION COUNT, LIMIT        16    2147483647
+*** This solver runs with a community license.
+--- GMO setup time: 0.00s
+--- GMO memory 0.50 Mb (peak 0.50 Mb)
+--- Dictionary memory 0.00 Mb
+--- Cplex 22.1.1.0 link memory 0.00 Mb (peak 0.00 Mb)
+--- Starting Cplex
+
+
+--- LP status (1): optimal.
+--- Cplex Time: 0.00sec (det. 0.05 ticks)
+
+
+Optimal solution found
+Objective:           51.600000
+
+
+---- EQU Reservoir_storage  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1         7.0000         7.0000         7.0000         3.7000      
+m2         2.0000         2.0000         2.0000         3.7000      
+m3         3.0000         3.0000         3.0000         3.7000      
+m4         4.0000         4.0000         4.0000         3.7000      
+m5         3.0000         3.0000         3.0000         3.7000      
+m6         2.0000         2.0000         2.0000         3.7000      
+
+---- EQU Reservoir_capacity  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1        -INF            6.0000         9.0000          .          
+m2        -INF            7.0000         9.0000          .          
+m3        -INF            8.0000         9.0000          .          
+m4        -INF            8.0000         9.0000          .          
+m5        -INF            7.0000         9.0000          .          
+m6        -INF            5.0000         9.0000          .          
+
+---- EQU Hydro_capacity  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1        -INF            1.0000         4.0000          .          
+m2        -INF            1.0000         4.0000          .          
+m3        -INF            2.0000         4.0000          .          
+m4        -INF            4.0000         4.0000         0.2000      
+m5        -INF            4.0000         4.0000         0.5000      
+m6        -INF            4.0000         4.0000         0.5000      
+
+---- EQU Irrigation_use  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1        -1.0000        -1.0000        -1.0000         2.1000      
+m2        -1.0000        -1.0000        -1.0000         2.0000      
+m3        -1.0000        -1.0000        -1.0000         1.9000      
+m4        -1.0000        -1.0000        -1.0000         2.0000      
+m5        -1.0000        -1.0000        -1.0000         2.2000      
+m6        -1.0000        -1.0000        -1.0000         2.2000      
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- EQU Storage_f~         5.0000         5.0000        +INF           -3.7000      
+---- EQU Profit              .              .              .             1.0000      
+
+---- VAR storage  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1          .             6.0000        +INF             .          
+m2          .             7.0000        +INF             .          
+m3          .             8.0000        +INF             .          
+m4          .             8.0000        +INF             .          
+m5          .             7.0000        +INF             .          
+m6          .             5.0000        +INF             .          
+
+---- VAR spill  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1          .              .            +INF           -1.6000      
+m2          .              .            +INF           -1.7000      
+m3          .              .            +INF           -1.8000      
+m4          .              .            +INF           -1.7000      
+m5          .              .            +INF           -1.5000      
+m6          .              .            +INF           -1.5000      
+
+---- VAR hydropower  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1          .             1.0000        +INF             .          
+m2          .             1.0000        +INF             .          
+m3          .             2.0000        +INF             .          
+m4          .             4.0000        +INF             .          
+m5          .             4.0000        +INF             .          
+m6          .             4.0000        +INF             .          
+
+---- VAR irrigation  
+
+          LOWER          LEVEL          UPPER         MARGINAL
+
+m1          .              .            +INF           -1.1000      
+m2          .              .            +INF           -0.8000      
+m3          .             1.0000        +INF             .          
+m4          .             3.0000        +INF             .          
+m5          .             3.0000        +INF             .          
+m6          .             3.0000        +INF             .          
+
+                           LOWER          LEVEL          UPPER         MARGINAL
+
+---- VAR vprofit           -INF           51.6000        +INF             .          
+
+
+**** REPORT SUMMARY :        0     NONOPT
+                             0 INFEASIBLE
+                             0  UNBOUNDED
+
+
+EXECUTION TIME       =        0.063 SECONDS      4 MB  47.6.0 c2de9d6d WEX-WEI
+
+
+USER: CEE 6410 Water Resources Systems Analysis      G240923|0002AO-GEN
+      Utah State University, Utah Water Research Laboratory     DCE3763
+      License for teaching and research at degree granting institutions
+
+
+**** FILE SUMMARY
+
+Input      C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Homework 5 new.gms
+Output     C:\Users\fugal\OneDrive\Documents\GitHub\CEE-6410-Fugal\Homework 5 new.lst

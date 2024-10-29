@@ -1,0 +1,28 @@
+B 3 C o m p i l a t i o n
+B 66 Equation Listing    SOLVE reservoir Using LP From line 57
+D 69 Reservoir_storage
+D 80 Reservoir_capacity
+D 91 Hydro_capacity
+D 102 Irrigation_use
+D 113 Storage_final
+D 118 Profit
+B 124 Column Listing      SOLVE reservoir Using LP From line 57
+E 127 storage
+E 149 spill
+E 168 hydropower
+E 193 irrigation
+E 212 vprofit
+B 220 Range Statistics    SOLVE reservoir Using LP From line 57
+B 231 Model Statistics    SOLVE reservoir Using LP From line 57
+B 244 Solution Report     SOLVE reservoir Using LP From line 57
+F 275 Reservoir_storage
+F 286 Reservoir_capacity
+F 297 Hydro_capacity
+F 308 Irrigation_use
+F 321 Storage_final
+F 322 Profit
+G 324 storage
+G 335 spill
+G 346 hydropower
+G 357 irrigation
+G 370 vprofit
